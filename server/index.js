@@ -7,6 +7,7 @@ import multer from "multer";
 import morgan from "morgan";
 import path from "path";
 import { fileURLToPath } from "url";
+import {register } from "./controllers/auth.js"
 
 /* CONFIGURATION */
 const __filename = fileURLToPath(import.meta.url);
@@ -35,6 +36,13 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
+// ROUTES WITH FILES //
+// the below code is for register the user 
+// the first is the path
+// second is the middle ware for save the uploaded file into local storage 
+// thrid is the route handler 
+app.post("/auth/register", upload.single("picture"), register);
+
 // MONGO-DB DATABASE CONNECTION CONFIGURATION //
 const PORT = process.env.PORT || 6001;
 mongoose
@@ -45,4 +53,4 @@ mongoose
   .then(() => {
     app.listen(PORT);
   })
-  .catch((error));
+  .catch(error);
