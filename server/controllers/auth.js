@@ -48,7 +48,35 @@ export const register = async (request, response) => {
     // here in the below code we are sending the new user in responce
     response.status(201).json(savedUser); // 201 status code is for indication something is created
   } catch (error) {
-    // in the below code we are sending the error the mongodb gives 
+    // in the below code we are sending the error the mongodb gives
     response.status(404).json({ error: error.message });
+  }
+};
+
+// LOGGING IN USER
+export const login = async (request, responce) => {
+  try {
+    // we are getting the user detail from the request body
+    const { email, password } = request.body;
+    // we are checking our database for the given email address
+    const user = await User.findOne({ eamil: email });
+    // after then we have to check that the user given email address available in our database
+    // if there is no user with this email we are user does not exist message
+    if (!user)
+      return responce.status(400).json({ message: "User does not exits" });
+    // then we have compare user given normal password with hassed password
+    const isMatched = await bcrypt.compare(password, user.password);
+    // then we have to check
+    if (!isMatched)
+      return responce.status(400).json({ message: "Invalid Creditionls" });
+    //then we have to issue a json token
+    const token = jwt.sign({ id: user.__id }, process.env.JWT_SECRET);
+    // after then we have to delete the password inorder to not send to front end
+    delete User.password;
+    // after then we sending the responce to the client
+    responce.status(200).json({ token, user });
+  } catch (error) {
+    // we are sending error responce if we get any error
+    responce.status(500).json({ error: error.message });
   }
 };
