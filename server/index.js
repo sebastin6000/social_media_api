@@ -9,6 +9,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import authRoutes from "./routes/auth.js";
 import { register } from "./controllers/auth.js";
+import { userRouter } from "./routes/user.route.js";
 
 /* CONFIGURATION */
 const __filename = fileURLToPath(import.meta.url);
@@ -58,3 +59,4 @@ mongoose
 
 //ROUTES
 app.use("/auth/register", authRoutes);
+app.use("/users", userRouter);
