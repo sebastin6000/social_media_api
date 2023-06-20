@@ -9,7 +9,9 @@ import path from "path";
 import { fileURLToPath } from "url";
 import authRoutes from "./routes/auth.js";
 import { register } from "./controllers/auth.js";
+import { createPost } from "./controllers/posts.js";
 import { userRouter } from "./routes/user.route.js";
+import { verifyToken } from "./middleware/auth.js";
 
 /* CONFIGURATION */
 const __filename = fileURLToPath(import.meta.url);
@@ -44,6 +46,7 @@ const upload = multer({ storage });
 // second is the middle ware for save the uploaded file into local storage
 // thrid is the route handler
 app.post("/auth/register", upload.single("picture"), register);
+app.post("/posts", verifyToken, upload.single("picture"), createPost);
 
 // MONGO-DB DATABASE CONNECTION CONFIGURATION //
 const PORT = process.env.PORT || 6001;
